@@ -1,18 +1,20 @@
 pipeline {
     agent any
     tools {
-        maven 'Maven-3'
         jdk 'JDK17'
+        maven 'Maven3'
     }
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/praveensparx/demo-app.git'
+                git branch: 'main',
+                    url: 'https://github.com/praveensparx/demo-maven-app.git',
+                    credentialsId: 'github-pat'  // your PAT ID
             }
         }
         stage('Build') {
             steps {
-                sh 'mvn clean install'
+                sh 'mvn clean compile'
             }
         }
         stage('Test') {
@@ -24,11 +26,6 @@ pipeline {
             steps {
                 sh 'mvn package'
             }
-        }
-    }
-    post {
-        success {
-            archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
         }
     }
 }
